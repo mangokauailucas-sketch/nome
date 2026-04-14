@@ -6,4 +6,17 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig();
+// Build as a static SPA so platforms like Vercel/Netlify can serve it.
+// `cloudflare: false` drops the @cloudflare/vite-plugin (it produces a Worker
+// bundle, not a static site). `tanstackStart.spa` tells TanStack Start to emit
+// a prerendered shell + client bundle; with the SPA rewrites in vercel.json,
+// every route serves the shell and the router takes over client-side.
+export default defineConfig({
+  cloudflare: false,
+  tanstackStart: {
+    spa: {
+      enabled: true,
+      prerender: { outputPath: "/index" },
+    },
+  },
+});
